@@ -44,7 +44,7 @@ const Login = () => {
 
       <button
         className="w-full py-2 bg-violet-500 text-white rounded-md 
-                   hover:bg-violet-600 transition-colors cursor-pointer"
+                   hover:bg-violet-800 transition-colors cursor-pointer"
         onClick={handleLogin}
       >
         Login

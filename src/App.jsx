@@ -12,8 +12,9 @@ function App() {
 
   return (
     <>
-     <div className='bg-gray-600  flex flex-col items-center justify-center w-full h-full gap-4 p-4 rounded-2xl shadow-md'>
-      {isAuthenticated() ? (<PrivatePage/> ):( <>
+     <div className='bg-gray-900  flex flex-col items-center justify-center w-screen h-screen  gap-4 p-2 rounded-2xl shadow-md'>
+      {isAuthenticated() ? (<PrivatePage/> ):(
+         <>
       {issignup ? <Signup/> : <Login/>}
       <p  className='text-sm text-white'>
         {issignup ?  'Already have an account?' : "Don't have an account?"}
