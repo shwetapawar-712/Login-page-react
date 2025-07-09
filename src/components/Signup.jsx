@@ -1,22 +1,50 @@
-import React,{ useContext} from 'react'
-import AuthContext from '../context/AuthContext'
+import React,{ useContext, useState} from 'react'
+import {AuthContext} from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 
 const Signup= () => {
 
     const {username , password ,setUsername, setPassword, login} = useContext(AuthContext)
+   const [message,setMessage] =useState('')
+   const navigate = useNavigate();
 
-     const handleSignup = () => {
-  if (username && password) {
-    login({ name: username })  
+     const handleSignup = (e) => {
+ e.preventDefault();
+    const isValid = handleValidation();
+    
+    if (!username || !password) {
+      alert("Please enter both username and password");
+      return;
+    }
+
+    if (isValid) {
+      login({ name: username });
+      navigate('/private');  
+    }
+  };
+
+const handleValidation = () => {
+  const regExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+  if (password === "") {
+    setMessage("❌ Please enter password");
+    return false;
+  } else if (!regExp.test(password)) {
+    setMessage("❌ Password must include uppercase, lowercase, number & special character.");
+    return false;
   } else {
-    alert("Please enter both username and password")
+    setMessage("✅ Password is valid");
+    return true;
   }
-}
+};
+
   return (
        <div className="flex flex-col items-center gap-4 p-6 w-80 rounded-xl shadow-lg 
                     bg-white/20 backdrop-blur-md border border-white/30 
                     transition-all duration-300">
+ <form onSubmit={handleSignup} className="flex flex-col items-center gap-4 w-full">
+
       <h1 className='text-2l font-bold text-white'>Sign Up</h1>
      
       <input type="text" 
@@ -36,9 +64,11 @@ const Signup= () => {
       value={password}
       onChange={(e) => setPassword(e.target.value)}
       />
-     
+      {message && <p className='text-sm text-white text-center'>{message}</p>}
       <button className='w-full py-2 bg-violet-500 text-white rounded-md hover:bg-violet-600 cursor-pointer'
-      onClick={handleSignup}>Signup</button>
+      type='submit'>
+        Signup</button>
+        </form>
     </div>
   )
 }

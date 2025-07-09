@@ -1,27 +1,54 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import loginImg from '../assets/loginImg.png'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const { username, password, setUsername, setPassword, login } = useContext(AuthContext)
+  const  [message, setMessage] = useState('')
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (username && password) {
-      login({ name: username })
-    } else {
-      alert("Please enter both username and password")
+ 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const isValid = handleValidation();
+    
+    if (!username || !password) {
+      alert("Please enter both username and password");
+      return;
     }
+
+    if (isValid) {
+      login({ name: username });
+      navigate('/private');  
+    }
+  };
+
+
+const handleValidation = () => {
+  const regExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+  if (password === "") {
+    setMessage("❌ Please enter password");
+    return false;
+  } else if (!regExp.test(password)) {
+    setMessage("❌ Password must include uppercase, lowercase, number & special character.");
+    return false;
+  } else {
+    setMessage("✅ Password is valid");
+    return true;
   }
+};
 
   return (
     <div className="flex flex-col items-center gap-4 p-6 w-80 rounded-xl shadow-lg 
                     bg-white/20 backdrop-blur-md border border-white/30 
                     transition-all duration-300">
-
+       <form onSubmit={handleLogin} className="flex flex-col items-center gap-4 w-full">
       <img src={loginImg} alt="Login" className="w-24 h-24 rounded-full shadow-md" />
 
       <h1 className="text-2xl font-bold text-white">Login</h1>
-
+   
       <input
         type="text"
         placeholder="Enter username"
@@ -41,14 +68,16 @@ const Login = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-
+      {message && <p className='text-sm text-white text-center'>{message}</p>}
       <button
+      type='submit'
         className="w-full py-2 bg-violet-500 text-white rounded-md 
                    hover:bg-violet-800 transition-colors cursor-pointer"
-        onClick={handleLogin}
+        
       >
         Login
       </button>
+      </form>
     </div>
   )
 }
